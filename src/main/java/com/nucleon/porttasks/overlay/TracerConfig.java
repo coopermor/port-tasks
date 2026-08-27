@@ -48,6 +48,7 @@ public class TracerConfig
 			lastUpdateNanos = now;
 		}
 	}
+
 	public void loadConfigs(PortTasksConfig config)
 	{
 		this.tracerEnabled = config.enableTracer();

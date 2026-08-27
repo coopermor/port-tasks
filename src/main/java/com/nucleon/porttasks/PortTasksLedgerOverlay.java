@@ -84,7 +84,7 @@ class PortTasksLedgerOverlay extends Overlay
 
 		//  looping through all the port tasks currently assigned
 		for (CourierTask task : plugin.courierTasks)
-		{	// ledger object from the port data enum
+		{    // ledger object from the port data enum
 			int pickupLedgerObjectID = task.getData().getCargoLocation().getLedgerObject();
 			int deliveryLedgerObjectID = task.getData().getDeliveryLocation().getLedgerObject();
 			// store a reference to them in the map, so we can render
@@ -107,7 +107,7 @@ class PortTasksLedgerOverlay extends Overlay
 
 			Polygon poly = Perspective.getCanvasTileAreaPoly(client, ledger.getLocalLocation(), size);
 			if (poly != null)
-			{	// we stored the tasks that are using this ledger,
+			{    // we stored the tasks that are using this ledger,
 				// so we can draw a dynamic tile
 				// TODO: fix this later (pickup ledgers still overlay 1/1)
 				Color[] colors = getOverlayColors(tasksAtLedger);
@@ -133,8 +133,8 @@ class PortTasksLedgerOverlay extends Overlay
 				}
 				// so we know it's either a pickup or delivery, display the data of either
 				String label = isPickup
-						? String.format("Cargo: %d/%d", cargoTakenFromLedger, cargoRequired)
-						: String.format("Delivered: %d/%d", cargoDeliveredToLedger, cargoRequired);
+					? String.format("Cargo: %d/%d", cargoTakenFromLedger, cargoRequired)
+					: String.format("Delivered: %d/%d", cargoDeliveredToLedger, cargoRequired);
 
 				Point textLocation = Perspective.getCanvasTextLocation(client, g, ledger.getLocalLocation(), label, 0);
 				if (textLocation != null)

@@ -161,7 +161,7 @@ public final class CourierTaskData
 
 		int reward = TaskReward.getIntRewardForTask(dbrow);
 		double distance = dockMarkers.getDistance();
-		double xpPerTile = distance > 0 ? ( reward / distance) : 0.0;
+		double xpPerTile = distance > 0 ? (reward / distance) : 0.0;
 
 		return new CourierTaskData(dbrow, id, level, noticeBoard, cargoLocation, deliveryLocation, dockMarkers, reversePath, taskName, cargo, cargoAmount, xpPerTile);
 	}

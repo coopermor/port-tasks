@@ -39,47 +39,47 @@ import net.runelite.client.util.ImageUtil;
 
 public class HidePortTaskSlotOverlay extends MouseAdapter
 {
-private final JLabel hideMarker;
-private final Task task;
-private final TaskPanel panel;
-private final PortTasksPlugin plugin;
-private static final ImageIcon VISIBLE_HOVER_ICON;
-private static final ImageIcon INVISIBLE_HOVER_ICON;
+	private final JLabel hideMarker;
+	private final Task task;
+	private final TaskPanel panel;
+	private final PortTasksPlugin plugin;
+	private static final ImageIcon VISIBLE_HOVER_ICON;
+	private static final ImageIcon INVISIBLE_HOVER_ICON;
 
-static
-{
-	final BufferedImage visibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "visible_icon.png");
-	VISIBLE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(visibleImg, -100));
+	static
+	{
+		final BufferedImage visibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "visible_icon.png");
+		VISIBLE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(visibleImg, -100));
 
-	final BufferedImage invisibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "invisible_icon.png");
-	INVISIBLE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(invisibleImg, -100));
-}
+		final BufferedImage invisibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "invisible_icon.png");
+		INVISIBLE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(invisibleImg, -100));
+	}
 
-public HidePortTaskSlotOverlay(JLabel hideMarker, Task task, TaskPanel panel, PortTasksPlugin plugin)
-{
-	this.hideMarker = hideMarker;
-	this.task = task;
-	this.panel = panel;
-	this.plugin = plugin;
-}
+	public HidePortTaskSlotOverlay(JLabel hideMarker, Task task, TaskPanel panel, PortTasksPlugin plugin)
+	{
+		this.hideMarker = hideMarker;
+		this.task = task;
+		this.panel = panel;
+		this.plugin = plugin;
+	}
 
-@Override
-public void mousePressed(MouseEvent mouseEvent)
-{
-	task.setTracking(!task.isTracking());
-	panel.updateVisibility();
-	plugin.saveSlotSettings();
-}
+	@Override
+	public void mousePressed(MouseEvent mouseEvent)
+	{
+		task.setTracking(!task.isTracking());
+		panel.updateVisibility();
+		plugin.saveSlotSettings();
+	}
 
-@Override
-public void mouseEntered(MouseEvent mouseEvent)
-{
-	hideMarker.setIcon(task.isTracking() ? VISIBLE_HOVER_ICON : INVISIBLE_HOVER_ICON);
-}
+	@Override
+	public void mouseEntered(MouseEvent mouseEvent)
+	{
+		hideMarker.setIcon(task.isTracking() ? VISIBLE_HOVER_ICON : INVISIBLE_HOVER_ICON);
+	}
 
-@Override
-public void mouseExited(MouseEvent mouseEvent)
-{
-	panel.updateVisibility();
-}
+	@Override
+	public void mouseExited(MouseEvent mouseEvent)
+	{
+		panel.updateVisibility();
+	}
 }

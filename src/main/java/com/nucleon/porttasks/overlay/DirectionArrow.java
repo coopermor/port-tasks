@@ -69,7 +69,10 @@ public class DirectionArrow
 
 		WorldPoint playerRealLocation = WorldPoint.fromLocalInstance(client, player.getLocalLocation());
 		WorldPoint goalRealLocation = WorldPoint.fromLocalInstance(client, localPoint);
-		if (playerRealLocation == null) return;
+		if (playerRealLocation == null)
+		{
+			return;
+		}
 
 		if (goalRealLocation.distanceTo(playerRealLocation) >= maxMinimapDrawDistance)
 		{
@@ -84,7 +87,7 @@ public class DirectionArrow
 		}
 
 		Line2D.Double line = new Line2D.Double(posOnMinimap.getX(), posOnMinimap.getY() - 18, posOnMinimap.getX(),
-				posOnMinimap.getY() - 8);
+			posOnMinimap.getY() - 8);
 
 		drawMinimapArrow(graphics, line, color);
 
@@ -105,7 +108,10 @@ public class DirectionArrow
 		}
 
 		WorldPoint playerRealLocation = WorldPoint.fromLocalInstance(client, player.getLocalLocation());
-		if (playerRealLocation == null) return;
+		if (playerRealLocation == null)
+		{
+			return;
+		}
 
 		if (worldPoint.distanceTo(playerRealLocation) >= maxMinimapDrawDistance)
 		{
@@ -124,7 +130,7 @@ public class DirectionArrow
 			}
 
 			Line2D.Double line = new Line2D.Double(posOnMinimap.getX(), posOnMinimap.getY() - 18, posOnMinimap.getX(),
-					posOnMinimap.getY() - 8);
+				posOnMinimap.getY() - 8);
 
 			drawMinimapArrow(graphics, line, color);
 		}

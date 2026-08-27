@@ -57,8 +57,14 @@ public final class RelativeMove
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass())
+		{
+			return false;
+		}
 		RelativeMove other = (RelativeMove) obj;
 		return dx == other.dx && dy == other.dy;
 	}

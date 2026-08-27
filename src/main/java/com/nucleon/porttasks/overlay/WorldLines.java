@@ -131,6 +131,7 @@ public class WorldLines
 			}
 		}
 	}
+
 	private static void renderTaskLinesTracer(Graphics2D g, Client client, CourierTask task, int clip, boolean offset, TracerConfig tracerConfig, int drawDistance)
 	{
 		int heightOffset = offset ? (task.getSlot() * 100) : 0;
@@ -178,29 +179,29 @@ public class WorldLines
 	private static Color dimColor(Color color, float factor)
 	{
 		factor = Math.min(Math.max(factor, 0f), 1f);
-		int r = (int)(color.getRed() * factor);
-		int g = (int)(color.getGreen() * factor);
-		int b = (int)(color.getBlue() * factor);
-		int a = (int)(color.getAlpha() * factor);
+		int r = (int) (color.getRed() * factor);
+		int g = (int) (color.getGreen() * factor);
+		int b = (int) (color.getBlue() * factor);
+		int a = (int) (color.getAlpha() * factor);
 		return new Color(r, g, b, a);
 	}
 
 	private static List<WorldPoint> interpolateLine(WorldPoint start, WorldPoint end)
+	{
+		List<WorldPoint> result = new ArrayList<>();
+		int steps = Math.max(start.distanceTo(end), 1);
+
+		for (int i = 0; i <= steps; i++)
 		{
-			List<WorldPoint> result = new ArrayList<>();
-			int steps = Math.max(start.distanceTo(end), 1);
-
-			for (int i = 0; i <= steps; i++)
-			{
-				double t = i / (double) steps;
-				int x = (int) Math.round(lerp(start.getX(), end.getX(), t));
-				int y = (int) Math.round(lerp(start.getY(), end.getY(), t));
-				int plane = start.getPlane();
-				result.add(new WorldPoint(x, y, plane));
-			}
-
-			return result;
+			double t = i / (double) steps;
+			int x = (int) Math.round(lerp(start.getX(), end.getX(), t));
+			int y = (int) Math.round(lerp(start.getY(), end.getY(), t));
+			int plane = start.getPlane();
+			result.add(new WorldPoint(x, y, plane));
 		}
+
+		return result;
+	}
 
 	private static double lerp(int a, int b, double t)
 	{
@@ -211,74 +212,72 @@ public class WorldLines
 	{
 		// Now convert the start and end into local points based on an offset
 		LocalPoint startLp = new LocalPoint(refLp.getX() + (startWp.getX() - refWp.getX()) * Perspective.LOCAL_TILE_SIZE, refLp.getY() + (startWp.getY() - refWp.getY()) * Perspective.LOCAL_TILE_SIZE, WorldView.TOPLEVEL);
-		LocalPoint endLp   = new LocalPoint(refLp.getX() + (  endWp.getX() - refWp.getX()) * Perspective.LOCAL_TILE_SIZE, refLp.getY() + (  endWp.getY() - refWp.getY()) * Perspective.LOCAL_TILE_SIZE, WorldView.TOPLEVEL);
+		LocalPoint endLp = new LocalPoint(refLp.getX() + (endWp.getX() - refWp.getX()) * Perspective.LOCAL_TILE_SIZE, refLp.getY() + (endWp.getY() - refWp.getY()) * Perspective.LOCAL_TILE_SIZE, WorldView.TOPLEVEL);
 
 		renderLineLocal(graphics, client, startLp, startHeight, endLp, endHeight, c, lineWidth, distanceClip);
 	}
 
-private static void renderLineWorld(Graphics2D graphics, Client client, WorldPoint refWp, LocalPoint refLp, WorldPoint startWp, int startHeight, WorldPoint endWp, int endHeight, Color c, float lineWidth, float distanceClip, TracerConfig tracerConfig)
-{
-	List<WorldPoint> fullInterp = interpolateLine(startWp, endWp);
-	if (fullInterp.isEmpty())
+	private static void renderLineWorld(Graphics2D graphics, Client client, WorldPoint refWp, LocalPoint refLp, WorldPoint startWp, int startHeight, WorldPoint endWp, int endHeight, Color c, float lineWidth, float distanceClip, TracerConfig tracerConfig)
 	{
-		return;
-	}
-
-	final int CHUNK_SIZE = 50;
-	int totalPoints = fullInterp.size();
-	int totalSegments = totalPoints - 1;
-	if (totalSegments <= 0)
-	{
-		return;
-	}
-
-	int pulse = tracerConfig.getFrameTick() % CHUNK_SIZE;
-
-	for (int i = 0; i < totalSegments; i++)
-	{
-		int chunkIndex = i / CHUNK_SIZE;
-		int segmentInChunk = i % CHUNK_SIZE;
-		int segmentsRemaining = totalSegments - chunkIndex * CHUNK_SIZE;
-		int segmentsInChunk = Math.min(CHUNK_SIZE, segmentsRemaining);
-
-		boolean isPulse;
-		if (segmentsInChunk == CHUNK_SIZE)
+		List<WorldPoint> fullInterp = interpolateLine(startWp, endWp);
+		if (fullInterp.isEmpty())
 		{
-			isPulse = segmentInChunk == pulse;
-		}
-		else
-		{
-			int scaledPulse = (pulse * segmentsInChunk) / CHUNK_SIZE;
-			isPulse = segmentInChunk == scaledPulse;
+			return;
 		}
 
-		WorldPoint wp1 = fullInterp.get(i);
-		WorldPoint wp2 = fullInterp.get(i + 1);
+		final int CHUNK_SIZE = 50;
+		int totalPoints = fullInterp.size();
+		int totalSegments = totalPoints - 1;
+		if (totalSegments <= 0)
+		{
+			return;
+		}
 
-		LocalPoint lp1 = new LocalPoint(
+		int pulse = tracerConfig.getFrameTick() % CHUNK_SIZE;
+
+		for (int i = 0; i < totalSegments; i++)
+		{
+			int chunkIndex = i / CHUNK_SIZE;
+			int segmentInChunk = i % CHUNK_SIZE;
+			int segmentsRemaining = totalSegments - chunkIndex * CHUNK_SIZE;
+			int segmentsInChunk = Math.min(CHUNK_SIZE, segmentsRemaining);
+
+			boolean isPulse;
+			if (segmentsInChunk == CHUNK_SIZE)
+			{
+				isPulse = segmentInChunk == pulse;
+			}
+			else
+			{
+				int scaledPulse = (pulse * segmentsInChunk) / CHUNK_SIZE;
+				isPulse = segmentInChunk == scaledPulse;
+			}
+
+			WorldPoint wp1 = fullInterp.get(i);
+			WorldPoint wp2 = fullInterp.get(i + 1);
+
+			LocalPoint lp1 = new LocalPoint(
 				refLp.getX() + (wp1.getX() - refWp.getX()) * Perspective.LOCAL_TILE_SIZE,
 				refLp.getY() + (wp1.getY() - refWp.getY()) * Perspective.LOCAL_TILE_SIZE,
 				WorldView.TOPLEVEL
-		);
+			);
 
-		LocalPoint lp2 = new LocalPoint(
+			LocalPoint lp2 = new LocalPoint(
 				refLp.getX() + (wp2.getX() - refWp.getX()) * Perspective.LOCAL_TILE_SIZE,
 				refLp.getY() + (wp2.getY() - refWp.getY()) * Perspective.LOCAL_TILE_SIZE,
 				WorldView.TOPLEVEL
-		);
+			);
 
-		Color col = isPulse
+			Color col = isPulse
 				? c
 				: dimColor(c, tracerConfig.getTracerIntensity());
 
-		renderLineLocal(graphics, client, lp1, startHeight, lp2, endHeight, col, lineWidth, distanceClip);
+			renderLineLocal(graphics, client, lp1, startHeight, lp2, endHeight, col, lineWidth, distanceClip);
+		}
 	}
-}
 
 
-
-
-private static void renderLineLocal(final Graphics2D graphics, Client client, final LocalPoint start, int startHeight, final LocalPoint end, int endHeight, final Color c, final float lineWidth, final float distanceClip)
+	private static void renderLineLocal(final Graphics2D graphics, Client client, final LocalPoint start, int startHeight, final LocalPoint end, int endHeight, final Color c, final float lineWidth, final float distanceClip)
 	{
 		Polygon poly = getLinePoly(client, start, startHeight, end, endHeight, distanceClip);
 
@@ -340,7 +339,7 @@ private static void renderLineLocal(final Graphics2D graphics, Client client, fi
 		float y2 = z * pitchCos - y1 * pitchSin;
 		float z1 = y1 * pitchCos + z * pitchSin;
 
-		return new float[] { x1, y2, z1 };
+		return new float[]{x1, y2, z1};
 	}
 
 	private static void lerpPos(float[] srcDst, float[] target, float amount)
@@ -373,14 +372,14 @@ private static void renderLineLocal(final Graphics2D graphics, Client client, fi
 		if (distanceClip > 0)
 		{
 			// find points along the line that are x distance away
-			final float cx = (float)client.getCameraFpX();
-			final float cy = (float)client.getCameraFpY();
+			final float cx = (float) client.getCameraFpX();
+			final float cy = (float) client.getCameraFpY();
 
 			final double rayX = x2 - x1;
 			final double rayY = y2 - y1;
 
-			final double camToAX = x1 - (int)cx;
-			final double camToAY = y1 - (int)cy;
+			final double camToAX = x1 - (int) cx;
+			final double camToAY = y1 - (int) cy;
 
 			// so we dont have to sqrt
 			final double distanceClipSquared = distanceClip * distanceClip;
@@ -417,8 +416,8 @@ private static void renderLineLocal(final Graphics2D graphics, Client client, fi
 					return null;
 				}
 
-				final float tIntersectionClosestToA = (float)Math.min(tIntersection1, tIntersection2);
-				final float tIntersectionClosestToB = (float)Math.max(tIntersection1, tIntersection2);
+				final float tIntersectionClosestToA = (float) Math.min(tIntersection1, tIntersection2);
+				final float tIntersectionClosestToB = (float) Math.max(tIntersection1, tIntersection2);
 
 				// keep p1 original just so when we lerp it we're not lerping to the lerped point
 				float[] p1CamOriginal = p1Cam.clone();

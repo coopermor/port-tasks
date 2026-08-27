@@ -85,11 +85,11 @@ public class NoticeBoardTooltip extends Overlay
 
 			String tooltip = String.format(
 				"Source: %s%s%s<br>" +
-				"Destination: %s<br>" +
-				"Experience: %s xp<br>" +
-				"Distance: %d tiles<br>" +
-				"XP/Tile: %s%d%%%s<br>" +
-				"Amount of cargo: %d",
+					"Destination: %s<br>" +
+					"Experience: %s xp<br>" +
+					"Distance: %d tiles<br>" +
+					"XP/Tile: %s%d%%%s<br>" +
+					"Amount of cargo: %d",
 				sourceColorTag,
 				data.getCargoLocation(),
 				endTag,
@@ -108,8 +108,8 @@ public class NoticeBoardTooltip extends Overlay
 			BountyTaskData data = (BountyTaskData) task;
 			String tooltip = String.format(
 				"Experience: %s<br>" +
-				"Items required: %d<br>" +
-				"Item rarity: 1 in %d",
+					"Items required: %d<br>" +
+					"Item rarity: 1 in %d",
 				TaskReward.getRewardForTask(data.getDbrow()),
 				data.getItemQuantity(),
 				data.getItemRarity()
@@ -158,13 +158,13 @@ public class NoticeBoardTooltip extends Overlay
 		return null;
 	}
 
-	private Color interpolateColor (Color min, Color max, double t)
+	private Color interpolateColor(Color min, Color max, double t)
 	{
 		t = Math.max(0.0, Math.min(1.0, t));
 
-		int r = (int) Math.round(min.getRed()   + (max.getRed()   - min.getRed())   * t);
+		int r = (int) Math.round(min.getRed() + (max.getRed() - min.getRed()) * t);
 		int g = (int) Math.round(min.getGreen() + (max.getGreen() - min.getGreen()) * t);
-		int b = (int) Math.round(min.getBlue()  + (max.getBlue()  - min.getBlue())  * t);
+		int b = (int) Math.round(min.getBlue() + (max.getBlue() - min.getBlue()) * t);
 
 		return new Color(r, g, b);
 	}

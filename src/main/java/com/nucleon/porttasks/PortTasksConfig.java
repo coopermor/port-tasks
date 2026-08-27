@@ -39,56 +39,61 @@ public interface PortTasksConfig extends Config
 	String CONFIG_GROUP = "porttasks";
 
 	@ConfigSection(
-			name = "Path Settings",
-			description = "Configure animation and visual settings for tracers",
-			position = 1
+		name = "Path Settings",
+		description = "Configure animation and visual settings for tracers",
+		position = 1
 	)
 	String pathSection = "pathSection";
+
 	@ConfigItem(
-			keyName = "navColor",
-			name = "Task 1 Color",
-			description = "The color of the navigation line",
-			section = pathSection
+		keyName = "navColor",
+		name = "Task 1 Color",
+		description = "The color of the navigation line",
+		section = pathSection
 	)
 	default Color getNavColor()
 	{
 		return new Color(201, 51, 255);
 	}
+
 	@ConfigItem(
-			keyName = "navColor2",
-			name = "Task 2 Color",
-			description = "The color of the navigation line",
-			section = pathSection
+		keyName = "navColor2",
+		name = "Task 2 Color",
+		description = "The color of the navigation line",
+		section = pathSection
 	)
 	default Color getNavColor2()
 	{
 		return new Color(255, 51, 105);
 	}
+
 	@ConfigItem(
-			keyName = "navColor3",
-			name = "Task 3 Color",
-			description = "The color of the navigation line",
-			section = pathSection
+		keyName = "navColor3",
+		name = "Task 3 Color",
+		description = "The color of the navigation line",
+		section = pathSection
 	)
 	default Color getNavColor3()
 	{
 		return new Color(255, 201, 51);
 	}
+
 	@ConfigItem(
-			keyName = "navColor4",
-			name = "Task 4 Color",
-			description = "The color of the navigation line",
-			section = pathSection
+		keyName = "navColor4",
+		name = "Task 4 Color",
+		description = "The color of the navigation line",
+		section = pathSection
 	)
 	default Color getNavColor4()
 	{
 		return new Color(105, 255, 51);
 	}
+
 	@ConfigItem(
-			keyName = "navColor5",
-			name = "Task 5 Color",
-			description = "The color of the navigation line",
-			section = pathSection
+		keyName = "navColor5",
+		name = "Task 5 Color",
+		description = "The color of the navigation line",
+		section = pathSection
 	)
 	default Color getNavColor5()
 	{
@@ -96,10 +101,10 @@ public interface PortTasksConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "drawOverlay",
-			name = "Draw Path",
-			description = "Draw path for port task",
-			section = pathSection
+		keyName = "drawOverlay",
+		name = "Draw Path",
+		description = "Draw path for port task",
+		section = pathSection
 	)
 	default Overlay getDrawOverlay()
 	{
@@ -107,10 +112,10 @@ public interface PortTasksConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "pathOffset",
-			name = "Offset Height Per Task",
-			description = "each path will be drawn at a different height",
-			section = pathSection
+		keyName = "pathOffset",
+		name = "Offset Height Per Task",
+		description = "each path will be drawn at a different height",
+		section = pathSection
 	)
 	default boolean enableHeightOffset()
 	{
@@ -119,27 +124,28 @@ public interface PortTasksConfig extends Config
 
 	@Range(min = 100, max = 250)
 	@ConfigItem(
-			keyName = "pathDrawDistance",
-			name = "Draw Distance",
-			description = "Path Draw Distance",
-			section = pathSection
+		keyName = "pathDrawDistance",
+		name = "Draw Distance",
+		description = "Path Draw Distance",
+		section = pathSection
 	)
 	default int pathDrawDistance()
 	{
 		return 150;
 	}
+
 	@ConfigSection(
-			name = "Tracer Settings",
-			description = "Configure animation and visual settings for overlay direction tracers",
-			position = 1
+		name = "Tracer Settings",
+		description = "Configure animation and visual settings for overlay direction tracers",
+		position = 1
 	)
 	String tracerSection = "tracerSection";
 
 	@ConfigItem(
-			keyName = "enableTracer",
-			name = "Enable Tracer Overlay",
-			description = "Toggle tracer animation on path lines",
-			section = tracerSection
+		keyName = "enableTracer",
+		name = "Enable Tracer Overlay",
+		description = "Toggle tracer animation on path lines",
+		section = tracerSection
 	)
 	default boolean enableTracer()
 	{
@@ -148,10 +154,10 @@ public interface PortTasksConfig extends Config
 
 	@Range(min = 0, max = 60)
 	@ConfigItem(
-			keyName = "tracerSpeed",
-			name = "Tracer Speed",
-			description = "Adjust how fast the tracer animation moves (lower = slower)",
-			section = tracerSection
+		keyName = "tracerSpeed",
+		name = "Tracer Speed",
+		description = "Adjust how fast the tracer animation moves (lower = slower)",
+		section = tracerSection
 	)
 	default int tracerSpeed()
 	{
@@ -160,10 +166,10 @@ public interface PortTasksConfig extends Config
 
 	@Range(min = 0, max = 100)
 	@ConfigItem(
-			keyName = "tracerIntensity",
-			name = "Tracer Intensity",
-			description = "Control brightness or visibility of the tracer (0–100%)",
-			section = tracerSection
+		keyName = "tracerIntensity",
+		name = "Tracer Intensity",
+		description = "Control brightness or visibility of the tracer (0–100%)",
+		section = tracerSection
 	)
 	default int tracerIntensity()
 	{
@@ -224,12 +230,13 @@ public interface PortTasksConfig extends Config
 	{
 		return Color.RED;
 	}
+
 	@ConfigItem(
-			keyName = "highlightCargoHolds",
-			name = "Highlight Cargo Holds",
-			description = "Outline cargo holds in your boat",
-			position = 5,
-			section = overlaySection
+		keyName = "highlightCargoHolds",
+		name = "Highlight Cargo Holds",
+		description = "Outline cargo holds in your boat",
+		position = 5,
+		section = overlaySection
 	)
 	default boolean highlightCargoHolds()
 	{
@@ -237,11 +244,11 @@ public interface PortTasksConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "highlightCargoHoldsColor",
-			name = "Color",
-			description = "Color used to outline cargo holds in your boat",
-			position = 6,
-			section = overlaySection
+		keyName = "highlightCargoHoldsColor",
+		name = "Color",
+		description = "Color used to outline cargo holds in your boat",
+		position = 6,
+		section = overlaySection
 	)
 	default Color highlightCargoHoldsColor()
 	{
@@ -249,11 +256,11 @@ public interface PortTasksConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "highlightTaskItems",
-			name = "Highlight Task Items",
-			description = "Outline bounty and courier items in your inventory",
-			position = 7,
-			section = overlaySection
+		keyName = "highlightTaskItems",
+		name = "Highlight Task Items",
+		description = "Outline bounty and courier items in your inventory",
+		position = 7,
+		section = overlaySection
 	)
 	default boolean highlightTaskItems()
 	{
@@ -261,11 +268,11 @@ public interface PortTasksConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "highlightHelmMissingCargo",
-			name = "Highlight Helm Missing Cargo",
-			description = "Outline helm on your boat",
-			position = 8,
-			section = overlaySection
+		keyName = "highlightHelmMissingCargo",
+		name = "Highlight Helm Missing Cargo",
+		description = "Outline helm on your boat",
+		position = 8,
+		section = overlaySection
 	)
 	default boolean highlightHelmMissingCargo()
 	{

@@ -342,11 +342,11 @@ public class PortTasksPlugin extends Plugin
 
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), ICON_FILE);
 		navigationButton = NavigationButton.builder()
-				.tooltip(PLUGIN_NAME)
-				.icon(icon)
-				.priority(5)
-				.panel(pluginPanel)
-				.build();
+			.tooltip(PLUGIN_NAME)
+			.icon(icon)
+			.priority(5)
+			.panel(pluginPanel)
+			.build();
 
 		clientToolbar.addNavigation(navigationButton);
 		registerOverlays();
@@ -409,7 +409,9 @@ public class PortTasksPlugin extends Plugin
 	private void onConfigChanged(final ConfigChanged event)
 	{
 		if (!event.getGroup().equals(PortTasksConfig.CONFIG_GROUP))
+		{
 			return;
+		}
 		switch (event.getKey())
 		{
 			case "drawOverlay":
@@ -766,7 +768,7 @@ public class PortTasksPlugin extends Plugin
 	{
 		chatMessageManager.queue(QueuedMessage.builder()
 			.type(ChatMessageType.GAMEMESSAGE)
-				.runeLiteFormattedMessage(new ChatMessageBuilder().append(message).build())
+			.runeLiteFormattedMessage(new ChatMessageBuilder().append(message).build())
 			.build());
 	}
 
@@ -801,7 +803,7 @@ public class PortTasksPlugin extends Plugin
 			Color.YELLOW, Color.RED, Color.GREEN, Color.ORANGE, Color.BLUE
 		})
 		{
-			if (colors.size() < 5 && ! colors.contains(defaultColor))
+			if (colors.size() < 5 && !colors.contains(defaultColor))
 			{
 				colors.add(defaultColor);
 			}
@@ -898,7 +900,9 @@ public class PortTasksPlugin extends Plugin
 		}
 
 		//CHECKSTYLE:OFF
-		Type type = new TypeToken<Set<WidgetTag>>() {}.getType();
+		Type type = new TypeToken<Set<WidgetTag>>()
+		{
+		}.getType();
 		//CHECKSTYLE:ON
 
 		try
@@ -1109,12 +1113,18 @@ public class PortTasksPlugin extends Plugin
 	{
 		switch (slot)
 		{
-			case 0: return config.getNavColor();
-			case 1: return config.getNavColor2();
-			case 2: return config.getNavColor3();
-			case 3: return config.getNavColor4();
-			case 4: return config.getNavColor5();
-			default: return Color.GREEN;
+			case 0:
+				return config.getNavColor();
+			case 1:
+				return config.getNavColor2();
+			case 2:
+				return config.getNavColor3();
+			case 3:
+				return config.getNavColor4();
+			case 4:
+				return config.getNavColor5();
+			default:
+				return Color.GREEN;
 		}
 	}
 
@@ -1150,13 +1160,13 @@ public class PortTasksPlugin extends Plugin
 	}
 
 	private void migrateConfiguration()
-	{	// min 5 max 25 <- version 1.4.0 -> min 100 max 250
+	{    // min 5 max 25 <- version 1.4.0 -> min 100 max 250
 		if (config.pathDrawDistance() < 100)
 		{
 			configManager.setConfiguration(
-					config.CONFIG_GROUP,
-					"pathDrawDistance",
-					150
+				config.CONFIG_GROUP,
+				"pathDrawDistance",
+				150
 			);
 		}
 	}

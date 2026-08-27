@@ -1985,7 +1985,7 @@ public enum PortPaths
 		new RelativeMove(-16, -16),
 		new RelativeMove(0, -126),
 		new RelativeMove(8, -8)
-		),
+	),
 	DEEPFIN_POINT_PORT_ROBERTS(
 		PortLocation.DEEPFIN_POINT,
 		PortLocation.PORT_ROBERTS,
@@ -2489,8 +2489,7 @@ public enum PortPaths
 		new RelativeMove(46, -46),
 		new RelativeMove(67, 0),
 		new RelativeMove(76, -76)
-	)
-	;
+	);
 
 	private final PortLocation start;
 	private final PortLocation end;
@@ -2504,6 +2503,7 @@ public enum PortPaths
 		this.pathPoints = List.of(pathPoints);
 		this.distance = computeDistance();
 	}
+
 	public static PortPathMatch findPath(PortLocation a, PortLocation b)
 	{
 		for (PortPaths p : values())
@@ -2544,17 +2544,20 @@ public enum PortPaths
 		}
 		return fullPath;
 	}
+
 	private List<RelativeMove> splitMove(RelativeMove delta, int segmentLength)
 	{
 		int dx = delta.getDx();
 		int dy = delta.getDy();
 		int steps = Math.max(
-				Math.abs(dx) / segmentLength + (Math.abs(dx) % segmentLength != 0 ? 1 : 0),
-				Math.abs(dy) / segmentLength + (Math.abs(dy) % segmentLength != 0 ? 1 : 0)
+			Math.abs(dx) / segmentLength + (Math.abs(dx) % segmentLength != 0 ? 1 : 0),
+			Math.abs(dy) / segmentLength + (Math.abs(dy) % segmentLength != 0 ? 1 : 0)
 		);
 
 		if (steps <= 1)
+		{
 			return List.of(delta);
+		}
 
 		List<RelativeMove> result = new ArrayList<>(steps);
 
@@ -2613,6 +2616,7 @@ public enum PortPaths
 		int dy = b.getY() - a.getY();
 		return Math.hypot(dx, dy);
 	}
+
 	@Override
 	public String toString()
 	{

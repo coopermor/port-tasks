@@ -63,7 +63,7 @@ public class DespawnTimerOverlay extends Overlay
 
 			if (config.corpseOverlay() == PortTasksConfig.Despawn.PIE)
 			{
-				float percent = ((float)tracker.getDespawnTime() - (now.toEpochMilli() - tracker.getStartTime().toEpochMilli())) / ((float)tracker.getDespawnTime());
+				float percent = ((float) tracker.getDespawnTime() - (now.toEpochMilli() - tracker.getStartTime().toEpochMilli())) / ((float) tracker.getDespawnTime());
 				Point point = tracker.getNpc().getCanvasTextLocation(graphics, "", 0);
 
 				if (point == null || percent > 1.0f)

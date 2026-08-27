@@ -24,6 +24,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
+
 @Slf4j
 public class PortTaskModelRenderer extends Overlay
 {
@@ -116,13 +117,14 @@ public class PortTaskModelRenderer extends Overlay
 			}
 		}
 	}
+
 	public void highlightLocalPlayerCargoHold(Graphics2D graphics, Color color)
 	{
 		for (GameObject cargoHold : plugin.getCargoHolds())
 		{
 			if (cargoHold.getWorldView().getId() == client.getLocalPlayer().getWorldView().getId())
 			{
-			modelOutlineRenderer.drawOutline(cargoHold, 2, color, 250);
+				modelOutlineRenderer.drawOutline(cargoHold, 2, color, 250);
 			}
 		}
 	}

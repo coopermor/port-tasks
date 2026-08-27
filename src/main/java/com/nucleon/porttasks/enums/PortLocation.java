@@ -85,7 +85,6 @@ public enum PortLocation
 	private static final Map<Integer, PortLocation> BY_DBROW = new HashMap<>();
 
 
-
 	PortLocation(int dbrow, String name, Integer sailingLevelRequired, int gangplankObject, int noticeboardObject, int ledgerObject, WorldPoint navigationLocation)
 	{
 		this.dbrow = dbrow;
@@ -101,7 +100,7 @@ public enum PortLocation
 	{
 		Set<Integer> gangplanks = new HashSet<>();
 		Set<Integer> noticeboards = new HashSet<>();
-		Set <Integer> ledgers = new HashSet<>();
+		Set<Integer> ledgers = new HashSet<>();
 		for (PortLocation p : values())
 		{
 			BY_DBROW.put(p.dbrow, p);

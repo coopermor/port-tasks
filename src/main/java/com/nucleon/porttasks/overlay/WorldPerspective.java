@@ -42,10 +42,10 @@ import static net.runelite.api.Constants.CHUNK_SIZE;
 
 public class WorldPerspective
 {
-private final static int SW = 0;
-private final static int NW = 3;
-private final static int NE = 2;
-private final static int SE = 1;
+	private final static int SW = 0;
+	private final static int NW = 3;
+	private final static int NE = 2;
+	private final static int SE = 1;
 
 	public static Collection<WorldPoint> toLocalInstanceFromReal(Client client, WorldPoint worldPoint)
 	{
@@ -54,7 +54,10 @@ private final static int SE = 1;
 			return Collections.singleton(worldPoint);
 		}
 
-		if (worldPoint == null) return Collections.singleton(null);
+		if (worldPoint == null)
+		{
+			return Collections.singleton(null);
+		}
 
 		List<WorldPoint> worldPoints = new ArrayList<>();
 
@@ -70,12 +73,12 @@ private final static int SE = 1;
 					int templateChunkY = (chunkData >> 3 & 0x7FF) * CHUNK_SIZE;
 					int templateChunkX = (chunkData >> 14 & 0x3FF) * CHUNK_SIZE;
 					if (worldPoint.getX() >= templateChunkX && worldPoint.getX() < templateChunkX + CHUNK_SIZE
-							&& worldPoint.getY() >= templateChunkY && worldPoint.getY() < templateChunkY + CHUNK_SIZE)
+						&& worldPoint.getY() >= templateChunkY && worldPoint.getY() < templateChunkY + CHUNK_SIZE)
 					{
 						WorldPoint p =
-								new WorldPoint(client.getBaseX() + x * CHUNK_SIZE + (worldPoint.getX() & (CHUNK_SIZE - 1)),
-										client.getBaseY() + y * CHUNK_SIZE + (worldPoint.getY() & (CHUNK_SIZE - 1)),
-										z);
+							new WorldPoint(client.getBaseX() + x * CHUNK_SIZE + (worldPoint.getX() & (CHUNK_SIZE - 1)),
+								client.getBaseY() + y * CHUNK_SIZE + (worldPoint.getY() & (CHUNK_SIZE - 1)),
+								z);
 						p = rotate(p, rotation);
 						if (p.isInScene(client))
 						{
@@ -150,10 +153,16 @@ private final static int SE = 1;
 
 	public static WorldPoint getInstanceWorldPointFromReal(Client client, WorldPoint wp)
 	{
-		if (wp == null) return null;
+		if (wp == null)
+		{
+			return null;
+		}
 		Collection<WorldPoint> points = WorldPerspective.toLocalInstanceFromReal(client, wp);
 
-		if (points.isEmpty()) return null;
+		if (points.isEmpty())
+		{
+			return null;
+		}
 
 		WorldPoint p = null;
 		for (WorldPoint point : points)
@@ -169,7 +178,10 @@ private final static int SE = 1;
 	public static WorldPoint getRealWorldPointFromLocal(Client client, WorldPoint wp)
 	{
 		LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), wp);
-		if (lp == null) return null;
+		if (lp == null)
+		{
+			return null;
+		}
 
 		return WorldPoint.fromLocalInstance(client, lp);
 	}
@@ -188,7 +200,10 @@ private final static int SE = 1;
 	public static Point mapWorldPointToGraphicsPoint(Client client, WorldPoint worldPoint)
 	{
 		var worldMap = client.getWorldMap();
-		if (worldPoint == null) return null;
+		if (worldPoint == null)
+		{
+			return null;
+		}
 		if (!worldMap.getWorldMapData().surfaceContainsPosition(worldPoint.getX(), worldPoint.getY()))
 		{
 			return null;
@@ -259,13 +274,11 @@ private final static int SE = 1;
 	}
 
 
-
-
-public static Point getMinimapPoint(Client client, WorldPoint start, WorldPoint destination)
+	public static Point getMinimapPoint(Client client, WorldPoint start, WorldPoint destination)
 	{
 		var worldMapData = client.getWorldMap().getWorldMapData();
 		if (worldMapData.surfaceContainsPosition(start.getX(), start.getY()) !=
-				worldMapData.surfaceContainsPosition(destination.getX(), destination.getY()))
+			worldMapData.surfaceContainsPosition(destination.getX(), destination.getY()))
 		{
 			return null;
 		}
@@ -318,7 +331,10 @@ public static Point getMinimapPoint(Client client, WorldPoint start, WorldPoint 
 	public static Polygon getZonePoly(Client client, Zone zone)
 	{
 		Polygon areaPoly = new Polygon();
-		if (zone == null) return areaPoly;
+		if (zone == null)
+		{
+			return areaPoly;
+		}
 
 		for (int x = zone.getMinX(); x < zone.getMaxX(); x++)
 		{
@@ -353,7 +369,10 @@ public static Point getMinimapPoint(Client client, WorldPoint start, WorldPoint 
 	private static void addToPoly(Client client, Polygon areaPoly, WorldPoint wp, int... points)
 	{
 		LocalPoint localPoint = LocalPoint.fromWorld(client.getTopLevelWorldView(), wp);
-		if (localPoint == null) return;
+		if (localPoint == null)
+		{
+			return;
+		}
 
 		Polygon poly = net.runelite.api.Perspective.getCanvasTilePoly(client, localPoint);
 		if (poly != null)
