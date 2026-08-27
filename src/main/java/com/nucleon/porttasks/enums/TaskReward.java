@@ -231,6 +231,7 @@ public enum TaskReward
 	TASK_8885(8885, 1157), // Red Rock rune delivery
 	TASK_8886(8886, 4564), // Port Piscarilius red coral delivery
 	TASK_8887(8887, 9129), // Red Rock fish delivery
+	TASK_8888(8888, 4600), // Land's End fish delivery
 	TASK_8889(8889, 1736), // Ardougne red coral delivery
 	TASK_8890(8890, 1805), // Catherby jewellery delivery
 	TASK_8891(8891, 6716), // Red Rock fur delivery
@@ -245,7 +246,7 @@ public enum TaskReward
 	TASK_8900(8900, 1174), // Port Roberts meat delivery
 	TASK_8901(8901, 2491), // Port Tyras chinchompa delivery
 	TASK_8902(8902, 4823), // Land's End meat delivery
-	TASK_8903(8903, 2526), // Prifddinas fabric delivery
+	TASK_8903(8903, 2523), // Prifddinas fabric delivery
 	TASK_8904(8904, 4374), // Land's End gem delivery
 	TASK_8905(8905, 3646), // Piscatoris fur delivery
 	TASK_8906(8906, 2411), // Land's End fur delivery
@@ -290,6 +291,7 @@ public enum TaskReward
 	TASK_8945(8945, 2026), // Port Sarim sunbeam ale delivery
 	TASK_8946(8946, 2025), // Ardougne spice delivery
 	TASK_8947(8947, 2655), // Summer Shore leather delivery
+	TASK_8948(8948, 4444), // Civitas illa Fortis red coral delivery
 	TASK_8949(8949, 212), // Sunset Coast beer delivery
 	TASK_8950(8950, 424), // Aldarin fur delivery
 	TASK_8951(8951, 1231), // Civitas illa Fortis fruit delivery
