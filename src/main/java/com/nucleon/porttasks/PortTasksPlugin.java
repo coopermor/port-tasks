@@ -56,7 +56,6 @@ import com.nucleon.porttasks.ui.PortTasksPluginPanel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
@@ -227,7 +226,6 @@ public class PortTasksPlugin extends Plugin
 	private int[] varPlayers;
 	private PortTasksPluginPanel pluginPanel;
 	private NavigationButton navigationButton;
-	private Item[] previousInventory;
 	private static final String PLUGIN_NAME = "Port Tasks";
 	private static final String ICON_FILE = "icon.png";
 	public static final String CONFIG_GROUP = "porttasks";
