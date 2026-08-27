@@ -2528,14 +2528,20 @@ public enum PortPaths
 		fullPath.add(current);
 		for (RelativeMove delta : pathPoints)
 		{
-			List<RelativeMove> moves = splitMove(delta, 50); // List<RelativeMove> moves = List.of(delta); to remove segmentation
-			for (RelativeMove m : moves)
+			for (RelativeMove move : splitMove(delta, 50))
 			{
-				current = new WorldPoint(current.getX() + m.getDx(), current.getY() + m.getDy(), current.getPlane());
+				current = new WorldPoint(current.getX() + move.getDx(), current.getY() + move.getDy(), current.getPlane());
 				fullPath.add(current);
 			}
 		}
-		fullPath.add(end.getNavigationLocation());
+		WorldPoint endLocation = end.getNavigationLocation();
+		RelativeMove finalMove = new RelativeMove(endLocation.getX() - current.getX(), endLocation.getY() - current.getY());
+
+		for (RelativeMove move : splitMove(finalMove, 50))
+		{
+			current = new WorldPoint(current.getX() + move.getDx(), current.getY() + move.getDy(), current.getPlane());
+			fullPath.add(current);
+		}
 		return fullPath;
 	}
 	private List<RelativeMove> splitMove(RelativeMove delta, int segmentLength)
