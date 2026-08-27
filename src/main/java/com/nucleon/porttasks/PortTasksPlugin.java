@@ -335,6 +335,8 @@ public class PortTasksPlugin extends Plugin
 			{
 				log.warn("Failed to load bounty task data", e);
 			}
+
+			this.sailingLevel = client.getRealSkillLevel(Skill.SAILING);
 			return true;
 		});
 
