@@ -27,6 +27,7 @@
 package com.nucleon.porttasks.ui;
 
 import com.nucleon.porttasks.CourierTask;
+import com.nucleon.porttasks.CourierTaskData;
 import com.nucleon.porttasks.ui.adapters.HidePortTaskSlotOverlay;
 import com.nucleon.porttasks.ui.adapters.PortTaskSlotOverlayColor;
 import com.nucleon.porttasks.PortTasksPlugin;
@@ -62,36 +63,36 @@ public class CourierTaskPanel extends JPanel implements TaskPanel
 	private final ItemManager itemManager;
 
 	private static final Border NAME_BOTTOM_BORDER = new CompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
-			BorderFactory.createLineBorder(ColorScheme.DARKER_GRAY_COLOR));
+		BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
+		BorderFactory.createLineBorder(ColorScheme.DARKER_GRAY_COLOR));
 
 	private static final ImageIcon
-			BORDER_COLOR_ICON,
-			VISIBLE_ICON,
-			INVISIBLE_ICON,
-			ANCHOR,
-			BOAT,
-			DESTINATION,
-			NOTICE,
-			PACKAGE,
-			LIGHTBULB;
+		BORDER_COLOR_ICON,
+		VISIBLE_ICON,
+		INVISIBLE_ICON,
+		ANCHOR,
+		BOAT,
+		DESTINATION,
+		NOTICE,
+		PACKAGE,
+		LIGHTBULB;
 
 	public final JLabel
-			PortTaskOverlayColor = new JLabel(),
-			hidePortTaskSlotOverlay = new JLabel(),
-			cargoRemainingText = new JLabel(),
-			cargoLabel = new JLabel(),
-			destinationLabel = new JLabel(),
-			noticeLabel = new JLabel(),
-			xpLabel = new JLabel(),
-			anchorLabel = new JLabel(),
-			boatLabel = new JLabel(),
-			taskName = new JLabel();
+		PortTaskOverlayColor = new JLabel(),
+		hidePortTaskSlotOverlay = new JLabel(),
+		cargoRemainingText = new JLabel(),
+		cargoLabel = new JLabel(),
+		destinationLabel = new JLabel(),
+		noticeLabel = new JLabel(),
+		xpLabel = new JLabel(),
+		anchorLabel = new JLabel(),
+		boatLabel = new JLabel(),
+		taskName = new JLabel();
 
 	private final JLabel
-			save   = new JLabel("Save"),
-			cancel = new JLabel("Cancel"),
-			rename = new JLabel("Rename");
+		save = new JLabel("Save"),
+		cancel = new JLabel("Cancel"),
+		rename = new JLabel("Rename");
 
 	public final JPanel PortTaskSlotContainer = new JPanel(new BorderLayout());
 	private final CourierTask courierTask;
@@ -255,10 +256,10 @@ public class CourierTaskPanel extends JPanel implements TaskPanel
 	private RuneliteColorPicker getColorPicker(Color color)
 	{
 		RuneliteColorPicker colorPicker = plugin.getColorPickerManager().create(
-				SwingUtilities.windowForComponent(this),
-				color,
-				courierTask.getData().taskName + " - overlay color",
-				false);
+			SwingUtilities.windowForComponent(this),
+			color,
+			courierTask.getData().taskName + " - overlay color",
+			false);
 		colorPicker.setLocationRelativeTo(this);
 		colorPicker.setOnClose(c -> plugin.saveSlotSettings());
 		return colorPicker;
@@ -284,21 +285,23 @@ public class CourierTaskPanel extends JPanel implements TaskPanel
 		anchorLabel.setIcon(ANCHOR);
 		boatLabel.setIcon(BOAT);
 
-		cargoLabel.setText(courierTask.getData().getCargoLocation().getName());
-		destinationLabel.setText(courierTask.getData().getDeliveryLocation().getName());
+		CourierTaskData data = courierTask.getData();
+		cargoLabel.setText(data.getCargoLocation().getName());
+		destinationLabel.setText(data.getDeliveryLocation().getName());
 		cargoLabel.setToolTipText("Cargo Location");
 		destinationLabel.setToolTipText("Delivery Location");
 		noticeLabel.setToolTipText("Cargo Item Needed");
 
-		String xp = TaskReward.getRewardForTask(courierTask.getData().getDbrow());
+		String xp = TaskReward.getRewardForTask(data.getDbrow());
+		String bagSize = TaskReward.getBagSizeForTask(data.getDbrow());
 		xpLabel.setIcon(LIGHTBULB);
-		xpLabel.setText(xp + " XP");
+		xpLabel.setText(xp + " XP (" + bagSize + " loot sack)");
 		xpLabel.setToolTipText("Delivery XP reward");
 
 		clientThread.invokeLater(() ->
 		{
-			final ItemComposition cargoComposition = itemManager.getItemComposition(courierTask.getData().cargo);
-			noticeLabel.setText(courierTask.getData().getCargoAmount() + "x " + cargoComposition.getMembersName());
+			final ItemComposition cargoComposition = itemManager.getItemComposition(data.cargo);
+			noticeLabel.setText(data.getCargoAmount() + "x " + cargoComposition.getMembersName());
 		});
 	}
 

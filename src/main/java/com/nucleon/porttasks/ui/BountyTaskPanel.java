@@ -32,6 +32,7 @@ import com.nucleon.porttasks.ui.adapters.PortTaskSlotOverlayColor;
 import com.nucleon.porttasks.PortTasksPlugin;
 import com.nucleon.porttasks.enums.TaskReward;
 
+import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.ItemComposition;
 import net.runelite.api.NPCComposition;
@@ -59,15 +60,15 @@ import java.awt.image.BufferedImage;
 
 public class BountyTaskPanel extends JPanel implements TaskPanel
 {
-public final PortTasksPlugin plugin;
-private final ClientThread clientThread;
-private final ItemManager itemManager;
-private final Client client;
-private static final Border NAME_BOTTOM_BORDER = new CompoundBorder(
+	public final PortTasksPlugin plugin;
+	private final ClientThread clientThread;
+	private final ItemManager itemManager;
+	private final Client client;
+	private static final Border NAME_BOTTOM_BORDER = new CompoundBorder(
 		BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
 		BorderFactory.createLineBorder(ColorScheme.DARKER_GRAY_COLOR));
 
-private static final ImageIcon
+	private static final ImageIcon
 		BORDER_COLOR_ICON,
 		VISIBLE_ICON,
 		INVISIBLE_ICON,
@@ -78,7 +79,7 @@ private static final ImageIcon
 		PACKAGE,
 		LIGHTBULB;
 
-public final JLabel
+	public final JLabel
 		PortTaskOverlayColor = new JLabel(),
 		hidePortTaskSlotOverlay = new JLabel(),
 		cargoRemainingText = new JLabel(),
@@ -90,148 +91,152 @@ public final JLabel
 		boatLabel = new JLabel(),
 		taskName = new JLabel();
 
-private final JLabel
-		save   = new JLabel("Save"),
+	private final JLabel
+		save = new JLabel("Save"),
 		cancel = new JLabel("Cancel"),
 		rename = new JLabel("Rename");
 
-public final JPanel PortTaskSlotContainer = new JPanel(new BorderLayout());
-private final BountyTask bountyTask;
+	public final JPanel PortTaskSlotContainer = new JPanel(new BorderLayout());
+	private final BountyTask bountyTask;
 
-static
-{
-	final BufferedImage borderImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "border_color_icon.png");
-	BORDER_COLOR_ICON = new ImageIcon(ImageUtil.alphaOffset(borderImg, -100));
-
-	final BufferedImage visibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "visible_icon.png");
-	VISIBLE_ICON = new ImageIcon(visibleImg);
-
-	final BufferedImage invisibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "invisible_icon.png");
-	INVISIBLE_ICON = new ImageIcon(invisibleImg);
-
-	final BufferedImage boatImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "boat.png");
-	BOAT = new ImageIcon(boatImg);
-
-	final BufferedImage anchorImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "anchor.png");
-	ANCHOR = new ImageIcon(anchorImg);
-
-	final BufferedImage destImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "destination.png");
-	DESTINATION = new ImageIcon(ImageUtil.alphaOffset(destImg, -100));
-
-	final BufferedImage noticeImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "notice.png");
-	NOTICE = new ImageIcon(ImageUtil.alphaOffset(noticeImg, -100));
-
-	final BufferedImage cargoImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "package.png");
-	PACKAGE = new ImageIcon(ImageUtil.alphaOffset(cargoImg, -100));
-
-	final BufferedImage lightbulbImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "lightbulb.png");
-	LIGHTBULB = new ImageIcon(ImageUtil.alphaOffset(lightbulbImg, -100));
-}
-
-public BountyTaskPanel(PortTasksPlugin plugin, BountyTask bountyTask, ClientThread clientThread, ItemManager itemManager, Client client, int slot)
-{
-	this.plugin = plugin;
-	this.bountyTask = bountyTask;
-	this.clientThread = clientThread;
-	this.itemManager = itemManager;
-	this.client = client;
-	setLayout(new BorderLayout());
-	setBackground(ColorScheme.DARKER_GRAY_COLOR);
-	setBorder(new EmptyBorder(0, 0, 0, 0));
-
-	JPanel nameWrapper = new JPanel(new BorderLayout());
-	nameWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-	nameWrapper.setBorder(NAME_BOTTOM_BORDER);
-
-	JPanel noticeWrapper = new JPanel(new BorderLayout());
-	noticeWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel cargoWrapper = new JPanel(new BorderLayout());
-	cargoWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel destinationWrapper = new JPanel(new BorderLayout());
-	destinationWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel xpWrapper = new JPanel(new BorderLayout());
-	xpWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel hideOverlay = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 3));
-	hideOverlay.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	PortTaskSlotContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
-	PortTaskSlotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel PortTaskActionsLeftSide = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-	PortTaskActionsLeftSide.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-	JPanel PortTaskInformationCenter = new JPanel();
-	PortTaskInformationCenter.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-
-
-	PortTaskOverlayColor.setToolTipText("edit Bounty Task color");
-	PortTaskOverlayColor.setForeground(bountyTask.getOverlayColor() == null ? Color.red : bountyTask.getOverlayColor());
-	PortTaskOverlayColor.addMouseListener(new PortTaskSlotOverlayColor(PortTaskOverlayColor, this));
-	PortTaskActionsLeftSide.add(PortTaskOverlayColor);
-
-	int itemsLooted = bountyTask.getItemsCollected();
-	int lootRequirement = bountyTask.getData().itemQuantity;
-
-	cargoRemainingText.setText("Items: " + itemsLooted + "/" + lootRequirement);
-	cargoRemainingText.setToolTipText("Remaining items");
-
-	cargoRemainingText.setForeground(itemsLooted < lootRequirement ? Color.RED : Color.GREEN);
-
-	if (itemsLooted == lootRequirement)
+	static
 	{
-		cargoRemainingText.setText("Items: " + itemsLooted + "/" + lootRequirement);
+		final BufferedImage borderImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "border_color_icon.png");
+		BORDER_COLOR_ICON = new ImageIcon(ImageUtil.alphaOffset(borderImg, -100));
+
+		final BufferedImage visibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "visible_icon.png");
+		VISIBLE_ICON = new ImageIcon(visibleImg);
+
+		final BufferedImage invisibleImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "invisible_icon.png");
+		INVISIBLE_ICON = new ImageIcon(invisibleImg);
+
+		final BufferedImage boatImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "boat.png");
+		BOAT = new ImageIcon(boatImg);
+
+		final BufferedImage anchorImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "anchor.png");
+		ANCHOR = new ImageIcon(anchorImg);
+
+		final BufferedImage destImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "destination.png");
+		DESTINATION = new ImageIcon(ImageUtil.alphaOffset(destImg, -100));
+
+		final BufferedImage noticeImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "notice.png");
+		NOTICE = new ImageIcon(ImageUtil.alphaOffset(noticeImg, -100));
+
+		final BufferedImage cargoImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "package.png");
+		PACKAGE = new ImageIcon(ImageUtil.alphaOffset(cargoImg, -100));
+
+		final BufferedImage lightbulbImg = ImageUtil.loadImageResource(PortTasksPlugin.class, "lightbulb.png");
+		LIGHTBULB = new ImageIcon(ImageUtil.alphaOffset(lightbulbImg, -100));
 	}
 
-	PortTaskInformationCenter.add(cargoRemainingText);
+	@Getter
+	private final int slot;
 
-	hidePortTaskSlotOverlay.setToolTipText((bountyTask.isTracking() ? "Hide" : "Show") + " Bounty Task");
-	hidePortTaskSlotOverlay.addMouseListener(new HidePortTaskSlotOverlay(hidePortTaskSlotOverlay, bountyTask, this, plugin));
+	public BountyTaskPanel(PortTasksPlugin plugin, BountyTask bountyTask, ClientThread clientThread, ItemManager itemManager, Client client, int slot)
+	{
+		this.plugin = plugin;
+		this.bountyTask = bountyTask;
+		this.clientThread = clientThread;
+		this.itemManager = itemManager;
+		this.client = client;
+		this.slot = slot;
+		setLayout(new BorderLayout());
+		setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		setBorder(new EmptyBorder(0, 0, 0, 0));
 
-	hideOverlay.add(hidePortTaskSlotOverlay);
-	taskName.setText(bountyTask.getData().taskName);
-	taskName.setHorizontalAlignment(SwingConstants.CENTER);
+		JPanel nameWrapper = new JPanel(new BorderLayout());
+		nameWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		nameWrapper.setBorder(NAME_BOTTOM_BORDER);
+
+		JPanel noticeWrapper = new JPanel(new BorderLayout());
+		noticeWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel cargoWrapper = new JPanel(new BorderLayout());
+		cargoWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel destinationWrapper = new JPanel(new BorderLayout());
+		destinationWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel xpWrapper = new JPanel(new BorderLayout());
+		xpWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel hideOverlay = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 3));
+		hideOverlay.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		PortTaskSlotContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
+		PortTaskSlotContainer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel PortTaskActionsLeftSide = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		PortTaskActionsLeftSide.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		JPanel PortTaskInformationCenter = new JPanel();
+		PortTaskInformationCenter.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 
 
-	nameWrapper.add(taskName, BorderLayout.CENTER);
-	nameWrapper.add(hideOverlay, BorderLayout.EAST);
-	nameWrapper.add(anchorLabel, BorderLayout.WEST);
+		PortTaskOverlayColor.setToolTipText("edit Bounty Task color");
+		PortTaskOverlayColor.setForeground(bountyTask.getOverlayColor() == null ? Color.red : bountyTask.getOverlayColor());
+		PortTaskOverlayColor.addMouseListener(new PortTaskSlotOverlayColor(PortTaskOverlayColor, this));
+		PortTaskActionsLeftSide.add(PortTaskOverlayColor);
 
-	JPanel portSlotWrapper = new JPanel();
-	portSlotWrapper.setLayout(new BoxLayout(portSlotWrapper, BoxLayout.Y_AXIS));
-	portSlotWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-	portSlotWrapper.add(nameWrapper);
-	portSlotWrapper.add(PortTaskSlotContainer);
+		int itemsLooted = bountyTask.getItemsCollected();
+		int lootRequirement = bountyTask.getData().itemQuantity;
 
-	noticeWrapper.add(noticeLabel, BorderLayout.WEST);
-	noticeWrapper.setBorder(NAME_BOTTOM_BORDER);
-	cargoWrapper.add(npcLabel, BorderLayout.WEST);
-	cargoWrapper.setBorder(NAME_BOTTOM_BORDER);
-	destinationWrapper.add(destinationLabel, BorderLayout.WEST);
-	destinationWrapper.setBorder(NAME_BOTTOM_BORDER);
-	xpWrapper.add(xpLabel, BorderLayout.WEST);
-	xpWrapper.setBorder(NAME_BOTTOM_BORDER);
+		cargoRemainingText.setText("Items: " + itemsLooted + "/" + lootRequirement);
+		cargoRemainingText.setToolTipText("Remaining items");
 
-	portSlotWrapper.add(noticeWrapper);
-	portSlotWrapper.add(cargoWrapper);
-	portSlotWrapper.add(destinationWrapper);
-	portSlotWrapper.add(xpWrapper);
+		cargoRemainingText.setForeground(itemsLooted < lootRequirement ? Color.RED : Color.GREEN);
 
-	PortTaskSlotContainer.setLayout(new BorderLayout());
-	PortTaskSlotContainer.add(PortTaskActionsLeftSide, BorderLayout.WEST);
-	PortTaskSlotContainer.add(PortTaskInformationCenter, BorderLayout.CENTER);
-	PortTaskSlotContainer.setBorder(NAME_BOTTOM_BORDER);
+		if (itemsLooted == lootRequirement)
+		{
+			cargoRemainingText.setText("Items: " + itemsLooted + "/" + lootRequirement);
+		}
 
-	add(portSlotWrapper);
+		PortTaskInformationCenter.add(cargoRemainingText);
 
-	updateVisibility();
-	updateColorIndicators();
-	updateImages(bountyTask);
+		hidePortTaskSlotOverlay.setToolTipText((bountyTask.isTracking() ? "Hide" : "Show") + " Bounty Task");
+		hidePortTaskSlotOverlay.addMouseListener(new HidePortTaskSlotOverlay(hidePortTaskSlotOverlay, bountyTask, this, plugin));
 
-}
+		hideOverlay.add(hidePortTaskSlotOverlay);
+		taskName.setText(bountyTask.getData().taskName);
+		taskName.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+		nameWrapper.add(taskName, BorderLayout.CENTER);
+		nameWrapper.add(hideOverlay, BorderLayout.EAST);
+		nameWrapper.add(anchorLabel, BorderLayout.WEST);
+
+		JPanel portSlotWrapper = new JPanel();
+		portSlotWrapper.setLayout(new BoxLayout(portSlotWrapper, BoxLayout.Y_AXIS));
+		portSlotWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		portSlotWrapper.add(nameWrapper);
+		portSlotWrapper.add(PortTaskSlotContainer);
+
+		noticeWrapper.add(noticeLabel, BorderLayout.WEST);
+		noticeWrapper.setBorder(NAME_BOTTOM_BORDER);
+		cargoWrapper.add(npcLabel, BorderLayout.WEST);
+		cargoWrapper.setBorder(NAME_BOTTOM_BORDER);
+		destinationWrapper.add(destinationLabel, BorderLayout.WEST);
+		destinationWrapper.setBorder(NAME_BOTTOM_BORDER);
+		xpWrapper.add(xpLabel, BorderLayout.WEST);
+		xpWrapper.setBorder(NAME_BOTTOM_BORDER);
+
+		portSlotWrapper.add(noticeWrapper);
+		portSlotWrapper.add(cargoWrapper);
+		portSlotWrapper.add(destinationWrapper);
+		portSlotWrapper.add(xpWrapper);
+
+		PortTaskSlotContainer.setLayout(new BorderLayout());
+		PortTaskSlotContainer.add(PortTaskActionsLeftSide, BorderLayout.WEST);
+		PortTaskSlotContainer.add(PortTaskInformationCenter, BorderLayout.CENTER);
+		PortTaskSlotContainer.setBorder(NAME_BOTTOM_BORDER);
+
+		add(portSlotWrapper);
+
+		updateVisibility();
+		updateColorIndicators();
+		updateImages(bountyTask);
+
+	}
 
 	public void openPortTaskColorPicker()
 	{
@@ -250,10 +255,10 @@ public BountyTaskPanel(PortTasksPlugin plugin, BountyTask bountyTask, ClientThre
 	private RuneliteColorPicker getColorPicker(Color color)
 	{
 		RuneliteColorPicker colorPicker = plugin.getColorPickerManager().create(
-				SwingUtilities.windowForComponent(this),
-				color,
-				bountyTask.getData().taskName + " - overlay color",
-				false);
+			SwingUtilities.windowForComponent(this),
+			color,
+			bountyTask.getData().taskName + " - overlay color",
+			false);
 		colorPicker.setLocationRelativeTo(this);
 		colorPicker.setOnClose(c -> plugin.saveSlotSettings());
 		return colorPicker;
@@ -263,7 +268,7 @@ public BountyTaskPanel(PortTasksPlugin plugin, BountyTask bountyTask, ClientThre
 	{
 		PortTaskOverlayColor.setBorder(new MatteBorder(0, 0, 3, 0, bountyTask.getOverlayColor()));
 		PortTaskOverlayColor.setIcon(BORDER_COLOR_ICON);
-}
+	}
 
 	public void updateVisibility()
 	{

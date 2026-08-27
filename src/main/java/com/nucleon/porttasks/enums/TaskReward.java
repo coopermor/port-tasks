@@ -638,4 +638,30 @@ public enum TaskReward
 		}
 		return String.valueOf(tr.reward);
 	}
+
+	public static String getBagSizeForTask(int dbrow)
+	{
+		TaskReward tr = BY_DBROW.get(dbrow);
+		if (tr == null || tr.reward <= 0)
+		{
+			return "Unknown";
+		}
+		if (tr.reward < 400)
+		{
+			return "Tiny";
+		}
+		if (tr.reward < 1000)
+		{
+			return "Small";
+		}
+		if (tr.reward < 2500)
+		{
+			return "Medium";
+		}
+		if (tr.reward < 6000)
+		{
+			return "Large";
+		}
+		return "Huge";
+	}
 }

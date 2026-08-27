@@ -28,6 +28,7 @@ package com.nucleon.porttasks.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
@@ -65,182 +66,163 @@ import java.util.List;
 
 public class PortTasksPluginPanel extends PluginPanel
 {
-		private static final ImageIcon RELOAD_ICON;
-		private final PluginErrorPanel errorPanel = new PluginErrorPanel();
-		public final PortTasksPlugin plugin;
-		private final PortTasksConfig config;
-		private final JPanel markerView = new JPanel();
-		private ClientThread clientThread;
-		private ItemManager itemManager;
-		private Client client;
+	private static final ImageIcon RELOAD_ICON;
+	private final PluginErrorPanel errorPanel = new PluginErrorPanel();
+	public final PortTasksPlugin plugin;
+	private final PortTasksConfig config;
+	private final JPanel markerView = new JPanel();
+	private ClientThread clientThread;
+	private ItemManager itemManager;
+	private Client client;
 
-		static
+	static
+	{
+		final BufferedImage addIcon = ImageUtil.loadImageResource(PortTasksPlugin.class, "reload.png");
+		RELOAD_ICON = new ImageIcon(addIcon);
+	}
+
+	public PortTasksPluginPanel(PortTasksPlugin plugin, ClientThread clientThread, ItemManager itemManager, Client client, PortTasksConfig config)
+	{
+		this.plugin = plugin;
+		this.config = config;
+		this.clientThread = clientThread;
+		this.itemManager = itemManager;
+		this.client = client;
+		setLayout(new BorderLayout());
+		setBorder(new EmptyBorder(10, 10, 10, 10));
+		setupErrorPanel(true);
+
+		// title panel
+		JPanel northPanel = new JPanel(new BorderLayout());
+		northPanel.setBorder(new EmptyBorder(1, 0, 10, 0));
+
+		JPanel titlePanel = new JPanel(new BorderLayout());
+		titlePanel.setBorder(new EmptyBorder(1, 3, 10, 7));
+
+		JLabel title = new JLabel("Port Tasks", SwingConstants.CENTER);
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		title.setForeground(Color.WHITE);
+
+		JLabel markerAdd = new JLabel(RELOAD_ICON);
+		markerAdd.setToolTipText("reload");
+		markerAdd.addMouseListener(new ReloadPortTasks(markerAdd, plugin, clientThread, this::addMarker));
+
+		JPanel markerButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 7, 3));
+		markerButtons.add(markerAdd);
+
+		titlePanel.add(title, BorderLayout.WEST);
+		titlePanel.add(markerButtons, BorderLayout.EAST);
+		northPanel.add(titlePanel, BorderLayout.NORTH);
+
+		// marker view panels, these are dynamically added in rebuild()
+		JPanel centerPanel = new JPanel(new BorderLayout());
+		centerPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+		markerView.setLayout(new BoxLayout(markerView, BoxLayout.Y_AXIS));
+		markerView.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		markerView.add(errorPanel);
+
+		centerPanel.add(markerView, BorderLayout.NORTH);
+
+		// setup panels border layout
+		add(northPanel, BorderLayout.NORTH);
+		add(centerPanel, BorderLayout.CENTER);
+
+		if (plugin.developerMode)
 		{
-			final BufferedImage addIcon = ImageUtil.loadImageResource(PortTasksPlugin.class, "reload.png");
-			RELOAD_ICON = new ImageIcon(addIcon);
+			addDeveloperPanel();
 		}
+	}
 
-		public PortTasksPluginPanel(PortTasksPlugin plugin, ClientThread clientThread, ItemManager itemManager, Client client, PortTasksConfig config)
+	public void rebuild()
+	{
+		markerView.removeAll();
+		List<Task> allTasks = new ArrayList<>();
+		allTasks.addAll(plugin.getCourierTasks());
+		allTasks.addAll(plugin.getBountyTasks());
+		allTasks.sort(Comparator.comparingInt(Task::getSlot));
+		for (Task task : allTasks)
 		{
-			this.plugin = plugin;
-			this.config = config;
-			this.clientThread = clientThread;
-			this.itemManager = itemManager;
-			this.client = client;
-			setLayout(new BorderLayout());
-			setBorder(new EmptyBorder(10, 10, 10, 10));
+			if (task instanceof CourierTask)
+			{
+				CourierTask courier = (CourierTask) task;
+				markerView.add(new CourierTaskPanel(plugin, courier, clientThread, itemManager, courier.getSlot()));
+			}
+			else if (task instanceof BountyTask)
+			{
+				BountyTask bounty = (BountyTask) task;
+				markerView.add(new BountyTaskPanel(plugin, bounty, clientThread, itemManager, client, bounty.getSlot()));
+			}
+			markerView.add(Box.createRigidArea(new Dimension(0, 10)));
+		}
+		if (allTasks.isEmpty())
+		{
 			setupErrorPanel(true);
-
-			// title panel
-			JPanel northPanel = new JPanel(new BorderLayout());
-			northPanel.setBorder(new EmptyBorder(1, 0, 10, 0));
-
-			JPanel titlePanel = new JPanel(new BorderLayout());
-			titlePanel.setBorder(new EmptyBorder(1, 3, 10, 7));
-
-			JLabel title = new JLabel("Port Tasks", SwingConstants.CENTER);
-			title.setHorizontalAlignment(SwingConstants.CENTER);
-			title.setForeground(Color.WHITE);
-
-			JLabel markerAdd = new JLabel(RELOAD_ICON);
-			markerAdd.setToolTipText("reload");
-			markerAdd.addMouseListener(new ReloadPortTasks(markerAdd, plugin, clientThread, this::addMarker));
-
-			JPanel markerButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 7, 3));
-			markerButtons.add(markerAdd);
-
-			titlePanel.add(title, BorderLayout.WEST);
-			titlePanel.add(markerButtons, BorderLayout.EAST);
-			northPanel.add(titlePanel, BorderLayout.NORTH);
-
-			// marker view panels, these are dynamically added in rebuild()
-			JPanel centerPanel = new JPanel(new BorderLayout());
-			centerPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-			markerView.setLayout(new BoxLayout(markerView, BoxLayout.Y_AXIS));
-			markerView.setBackground(ColorScheme.DARK_GRAY_COLOR);
-			markerView.add(errorPanel);
-
-			centerPanel.add(markerView, BorderLayout.NORTH);
-
-			// setup panels border layout
-			add(northPanel, BorderLayout.NORTH);
-			add(centerPanel, BorderLayout.CENTER);
-
-			if (plugin.developerMode)
-			{
-				addDeveloperPanel();
-			}
 		}
+		repaint();
+		revalidate();
+	}
 
-//		public void rebuild()
-//		{
-//			markerView.removeAll();
-//			List<CourierTask> courierTasks = plugin.getCourierTasks();
-//			for (CourierTask courierTask : courierTasks)
-//			{
-//				markerView.add(new CourierTaskPanel(plugin, courierTask, clientThread, itemManager, courierTask.getSlot()));
-//				markerView.add(Box.createRigidArea(new Dimension(0, 10)));
-//			}
-//			List<BountyTask> bountyTasks = plugin.getBountyTasks();
-//
-//			for (BountyTask bountyTask : bountyTasks)
-//			{
-//				markerView.add(new BountyTaskPanel(plugin, bountyTask, clientThread, itemManager, bountyTask.getSlot()));
-//				markerView.add(Box.createRigidArea(new Dimension(0, 10)));
-//			}
-//
-//			if (courierTasks.isEmpty() || bountyTasks.isEmpty())
-//			{
-//				setupErrorPanel(true);
-//			}
-//			repaint();
-//			revalidate();
-//		}
-
-		public void rebuild()
+	public void updateBountyPanel(BountyTask task) // avoid rebuilding the entire JPanel lol
+	{
+		for (Component component : markerView.getComponents())
 		{
-			markerView.removeAll();
-			List<Task> allTasks = new ArrayList<>();
-			allTasks.addAll(plugin.getCourierTasks());
-			allTasks.addAll(plugin.getBountyTasks());
-			allTasks.sort(Comparator.comparingInt(Task::getSlot));
-			for (Task task : allTasks)
+			if (component instanceof BountyTaskPanel)
 			{
-				if (task instanceof CourierTask)
+				BountyTaskPanel panel = (BountyTaskPanel) component;
+				if (panel.getSlot() == task.getSlot())
 				{
-					CourierTask courier = (CourierTask) task;
-					markerView.add(new CourierTaskPanel(plugin, courier, clientThread, itemManager, courier.getSlot()));
+					panel.refresh();
+					return;
 				}
-				else if (task instanceof BountyTask)
-				{
-					BountyTask bounty = (BountyTask) task;
-					markerView.add(new BountyTaskPanel(plugin, bounty, clientThread, itemManager, client, bounty.getSlot()));
-				}
-				markerView.add(Box.createRigidArea(new Dimension(0, 10)));
-			}
-			if (allTasks.isEmpty())
-			{
-				setupErrorPanel(true);
-			}
-			repaint();
-			revalidate();
-		}
-
-		public void updateBountyPanel(BountyTask task) // avoid rebuilding the entire JPanel lol
-		{
-			BountyTaskPanel panel = (BountyTaskPanel) markerView.getComponent(task.getSlot());
-			if (panel != null)
-			{
-				panel.refresh();
 			}
 		}
-
+	}
 
 
 	private void addMarker()
+	{
+		setupErrorPanel(false);
+	}
+
+	private void setupErrorPanel(boolean enabled)
+	{
+		PluginErrorPanel errorPanel = this.errorPanel;
+		errorPanel.setVisible(enabled);
+		if (enabled)
 		{
-			setupErrorPanel(false);
+			errorPanel.setContent("Port Tasks", "Click the 'reload' button to read the Port Task client data.");
+			markerView.removeAll();
+			markerView.setLayout(new BoxLayout(markerView, BoxLayout.Y_AXIS));
+			markerView.setBackground(ColorScheme.DARK_GRAY_COLOR);
+			markerView.add(errorPanel);
 		}
+	}
 
-		private void setupErrorPanel(boolean enabled)
+	private void addDeveloperPanel()
+	{
+		JPanel developerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		developerPanel.setBackground(ColorScheme.DARK_GRAY_HOVER_COLOR);
+		developerPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+
+		JComboBox<String> portPathDropdown = new JComboBox<>();
+		PortPaths[] paths = PortPaths.values();
+		Arrays.sort(paths, Comparator.comparing(Enum::name));
+
+		for (PortPaths path : paths)
 		{
-			PluginErrorPanel errorPanel = this.errorPanel;
-			errorPanel.setVisible(enabled);
-			if (enabled)
-			{
-				errorPanel.setContent("Port Tasks", "Click the 'reload' button to read the Port Task client data.");
-				markerView.removeAll();
-				markerView.setLayout(new BoxLayout(markerView, BoxLayout.Y_AXIS));
-				markerView.setBackground(ColorScheme.DARK_GRAY_COLOR);
-				markerView.add(errorPanel);
-			}
+			portPathDropdown.addItem(path.name());
 		}
+		portPathDropdown.setFocusable(false);
+		portPathDropdown.setToolTipText("Developer actions");
 
-		private void addDeveloperPanel()
+		portPathDropdown.addActionListener(e ->
 		{
-			JPanel developerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-			developerPanel.setBackground(ColorScheme.DARK_GRAY_HOVER_COLOR);
-			developerPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+			String selected = (String) portPathDropdown.getSelectedItem();
+			plugin.setDeveloperPathSelected(PortPaths.valueOf(selected));
+		});
 
-			JComboBox<String> portPathDropdown = new JComboBox<>();
-			PortPaths[] paths = PortPaths.values();
-			Arrays.sort(paths, Comparator.comparing(Enum::name));
-
-			for (PortPaths path : paths)
-			{
-				portPathDropdown.addItem(path.name());
-			}
-			portPathDropdown.setFocusable(false);
-			portPathDropdown.setToolTipText("Developer actions");
-
-			portPathDropdown.addActionListener(e ->
-			{
-				String selected = (String) portPathDropdown.getSelectedItem();
-				plugin.setDeveloperPathSelected(PortPaths.valueOf(selected));
-			});
-
-			developerPanel.add(portPathDropdown);
-			add(developerPanel, BorderLayout.SOUTH);
-		}
+		developerPanel.add(portPathDropdown);
+		add(developerPanel, BorderLayout.SOUTH);
+	}
 }
