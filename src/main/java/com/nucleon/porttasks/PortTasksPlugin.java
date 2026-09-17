@@ -714,7 +714,7 @@ public class PortTasksPlugin extends Plugin
 		}
 
 		NPC corpseNpc = (NPC) event.getNpc();
-		BountyCorpse corpse = new BountyCorpse(corpseNpc, Instant.now(), client.getTickCount(), 300 * Constants.GAME_TICK_LENGTH);
+		BountyCorpse corpse = new BountyCorpse(corpseNpc, Instant.now(), client.getTickCount(), 199 * Constants.GAME_TICK_LENGTH);
 		bountyCorpses.add(corpse);
 	}
 

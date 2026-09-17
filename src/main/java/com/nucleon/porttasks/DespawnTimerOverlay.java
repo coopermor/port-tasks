@@ -81,8 +81,8 @@ public class DespawnTimerOverlay extends Overlay
 			}
 			else if (config.corpseOverlay() == PortTasksConfig.Despawn.TICKS)
 			{
-				int ticksRemaining = 300 - (tickCount - tracker.getTickCount());
-				if (ticksRemaining < 0 || ticksRemaining > 300)
+				int ticksRemaining = 199 - (tickCount - tracker.getTickCount());
+				if (ticksRemaining < 0 || ticksRemaining > 199)
 				{
 					continue;
 				}
